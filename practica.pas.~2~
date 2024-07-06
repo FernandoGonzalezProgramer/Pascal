@@ -1,0 +1,215 @@
+unit practica;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxControls, cxLookAndFeels,
+  cxLookAndFeelPainters, cxContainer, cxEdit, Vcl.ComCtrls, dxCore, cxDateUtils,
+  Vcl.Menus, Vcl.StdCtrls, cxButtons, cxMaskEdit, cxDropDownEdit, cxCalendar,
+  cxLabel, cxTextEdit, Data.DB, DBAccess, Uni, MemDS, InterbaseUniProvider,
+  cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage, cxNavigator,
+  cxDBData, cxGridLevel, cxClasses, cxGridCustomView, cxGridCustomTableView,
+  cxGridTableView, cxGridDBTableView, cxGrid, cxSpinEdit, Vcl.ImgList,
+  Vcl.ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    UniConnection1: TUniConnection;
+    NombreTE: TcxTextEdit;
+    cxLabel2: TcxLabel;
+    ApellidoMTE: TcxTextEdit;
+    FechaNacDT: TcxDateEdit;
+    BInsertar: TcxButton;
+    BModificar: TcxButton;
+    BEliminar: TcxButton;
+    BCancelar: TcxButton;
+    cxLabel1: TcxLabel;
+    cxLabel3: TcxLabel;
+    cxLabel4: TcxLabel;
+    cxLabel5: TcxLabel;
+    ApellidoPTE: TcxTextEdit;
+    InsertarQRY: TUniQuery;
+    ClientesQuery: TUniQuery;
+    UniTransaction1: TUniTransaction;
+    ClientesTV: TcxGridDBTableView;
+    TablaLevel1: TcxGridLevel;
+    Tabla: TcxGrid;
+    BuscadorTE: TcxTextEdit;
+    ClientesSource: TDataSource;
+    NombreCompletoGC: TcxGridDBColumn;
+    FechaNacGC: TcxGridDBColumn;
+    idSE: TcxSpinEdit;
+    ModificarQRY: TUniQuery;
+    EliminarQRY: TUniQuery;
+    cxImageList1: TcxImageList;
+    ImagenOD: TOpenDialog;
+    ImagenB: TcxButton;
+    Image1: TImage;
+    procedure BInsertarClick(Sender: TObject);
+    procedure BuscadorCBClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure ClientesTVCellClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
+    procedure FormCreate(Sender: TObject);
+    procedure BModificarClick(Sender: TObject);
+    procedure BCancelarClick(Sender: TObject);
+    procedure BEliminarClick(Sender: TObject);
+    procedure BuscadorTEKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ImagenBClick(Sender: TObject);
+  private
+    procedure limpiarPantalla;
+  public
+    buscar : integer;
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+procedure TForm1.limpiarPantalla;
+begin
+  NombreTE.Clear;
+  ApellidoPTE.Clear;
+  ApellidoMTE.Clear;
+  FechaNacDT.Clear;
+end;
+
+
+procedure TForm1.BCancelarClick(Sender: TObject);
+begin
+limpiarPantalla;
+end;
+
+procedure TForm1.BEliminarClick(Sender: TObject);
+begin
+  EliminarQRY.Close;
+  EliminarQRY.ParamByName('pIdCliente').AsInteger := idSE.Value;
+  EliminarQRY.Execute;
+  ShowMessage('Registro eliminado exitosamente');
+  ClientesQuery.Close;
+  ClientesQuery.Open;
+end;
+
+procedure TForm1.BInsertarClick(Sender: TObject);
+begin
+  InsertarQRY.Close;
+  InsertarQRY.ParamByName('pNombre').AsString    := NombreTE.Text;
+  InsertarQRY.ParamByName('pApellidop').AsString := ApellidoPTE.Text;
+  InsertarQRY.ParamByName('pApellidom').AsString := ApellidoMTE.Text;
+  InsertarQRY.ParamByName('pFechanac').AsDate    := FechaNacDT.EditValue;
+  InsertarQRY.Execute;
+  limpiarPantalla;
+  ClientesQuery.Close;
+  ClientesQuery.Open;
+
+  ShowMessage('Datos Guardados Satisfactoriamente');
+
+
+end;
+
+procedure TForm1.BModificarClick(Sender: TObject);
+begin
+  ModificarQRY.Close;
+
+  ModificarQRY.ParamByName('pIdCliente').AsInteger := idSE.value;
+  ModificarQRY.ParamByName('pNombre').AsString     := NombreTE.Text;
+  ModificarQRY.ParamByName('pApellidop').AsString  := ApellidoPTE.Text;
+  ModificarQRY.ParamByName('pApellidom').AsString  := ApellidoMTE.Text;
+  ModificarQRY.ParamByName('pFechanac').AsDate     := FechaNacDT.EditValue;
+  ModificarQRY.Execute;
+  NombreTE.Clear;
+  ApellidoPTE.Clear;
+  ApellidoMTE.Clear;
+  FechaNacDT.Clear;
+  ClientesQuery.Close;
+  ClientesQuery.Open;
+
+  ShowMessage('Datos Modificados Exitosamente');
+end;
+
+procedure TForm1.BuscadorCBClick(Sender: TObject);
+begin
+          {
+ClientesQuery.Close;
+ClientesQuery.ParamByName('Nombre').AsString := BuscadorTE.Text;
+
+ClientesQuery.Open;
+ClientesTV.DataController.DataSource := ClientesSource;
+Tabla.Refresh;
+         }
+
+end;
+
+procedure TForm1.BuscadorTEKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+ ClientesTV.BeginUpdate;
+  Try
+    ClientesTV.DataController.Filter.Active := False;
+    ClientesTV.DataController.Filter.Clear;
+    ClientesTV.DataController.Filter.Options := [fcoCaseInsensitive];
+    ClientesTV.DataController.Filter.Root.AddItem(NombreCompletoGC, foLike, '%' + BuscadorTE.Text + '%', BuscadorTE.Text);
+    ClientesTV.DataController.Filter.Active := True;
+  Finally
+    ClientesTV.EndUpdate;
+  End;
+end;
+
+procedure TForm1.ClientesTVCellClick(Sender: TcxCustomGridTableView;
+  ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+  AShift: TShiftState; var AHandled: Boolean);
+begin
+   idSE.Value       := ClientesQuery.FieldByName('idCliente').AsInteger;
+   NombreTE.Text    := ClientesQuery.FieldByName('Nombre').AsString;
+   ApellidoPTE.Text := ClientesQuery.FieldByName('ApellidoP').AsString;
+   ApellidoMTE.Text := ClientesQuery.FieldByName('ApellidoM').AsString;
+   FechaNacDT.Date  := ClientesQuery.FieldByName('FechaNac').AsDateTime;
+
+
+end;
+
+procedure TForm1.ImagenBClick(Sender: TObject);
+  var
+    img : TImage;
+    imgStream : TMemoryStream;
+begin
+if ImagenOD.Execute then
+begin
+     img        := TImage.Create;
+     imgStream  := TMemoryStream.Create;
+  TRY
+    Screen.Cursor      := crHourGlass;
+    img.Picture.LoadFromFile(ImagenOD.FileName);
+    // Convertimos la imagen a un array de bytes
+    img.Picture.Graphic.SaveToStream(imgStream);
+    imgStream.Position := 0;
+
+  FINALLY
+    freeandnil(img);
+    freeandnil(imgStream);
+  END;
+
+end;
+
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  idSE.Visible := false;
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+
+  ClientesQuery.Open;
+  ClientesTV.DataController.DataSource := ClientesSource;
+
+
+end;
+
+end.

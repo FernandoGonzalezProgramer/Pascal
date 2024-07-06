@@ -1,0 +1,55 @@
+unit practica;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxControls, cxLookAndFeels,
+  cxLookAndFeelPainters, cxContainer, cxEdit, Vcl.ComCtrls, dxCore, cxDateUtils,
+  Vcl.Menus, Vcl.StdCtrls, cxButtons, cxMaskEdit, cxDropDownEdit, cxCalendar,
+  cxLabel, cxTextEdit, Data.DB, DBAccess, Uni, MemDS;
+
+type
+  TForm1 = class(TForm)
+    UniConnection1: TUniConnection;
+    NombreTE: TcxTextEdit;
+    cxLabel2: TcxLabel;
+    ApellidoMTE: TcxTextEdit;
+    FechaNacDT: TcxDateEdit;
+    BInsertar: TcxButton;
+    BModificar: TcxButton;
+    BEliminar: TcxButton;
+    BCancelar: TcxButton;
+    cxLabel1: TcxLabel;
+    cxLabel3: TcxLabel;
+    cxLabel4: TcxLabel;
+    cxLabel5: TcxLabel;
+    ApellidoPTE: TcxTextEdit;
+    InsertarQRY: TUniQuery;
+    procedure BInsertarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.BInsertarClick(Sender: TObject);
+begin
+  InsertarQRY.Close;
+  InsertarQRY.ParamByName('pNombre').AsString    := NombreTE.Text;
+  InsertarQRY.ParamByName('pApellidop').AsString := ApellidoPTE.Text;
+  InsertarQRY.ParamByName('pApellidom').AsString := ApellidoMTE.Text;
+  InsertarQRY.ParamByName('pFechanac').AsDate    := FechaNacDT.EditValue;
+  InsertarQRY.Execute;
+  ShowMessage('Datos Guardados Satisfactoriamente');
+
+end;
+
+end.

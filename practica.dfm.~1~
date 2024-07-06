@@ -1,0 +1,173 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 353
+  ClientWidth = 795
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object cxLabel2: TcxLabel
+    Left = 0
+    Top = 0
+    Align = alTop
+    Caption = 'Datos del cliente'
+    ParentColor = False
+    ParentFont = False
+    Style.Color = clSilver
+    Style.Font.Charset = DEFAULT_CHARSET
+    Style.Font.Color = clWindowText
+    Style.Font.Height = -21
+    Style.Font.Name = 'Tahoma'
+    Style.Font.Style = []
+    Style.HotTrack = False
+    Style.IsFontAssigned = True
+    Properties.Alignment.Horz = taCenter
+    Properties.ShadowedColor = clHighlight
+    ExplicitLeft = 3
+    ExplicitTop = 13
+    ExplicitWidth = 785
+    AnchorX = 398
+  end
+  object NombreTE: TcxTextEdit
+    Left = 56
+    Top = 53
+    Properties.CharCase = ecUpperCase
+    Style.BorderColor = clWindowFrame
+    Style.BorderStyle = ebs3D
+    Style.HotTrack = False
+    TabOrder = 1
+    Width = 301
+  end
+  object ApellidoPTE: TcxTextEdit
+    Left = 464
+    Top = 53
+    Style.BorderColor = clWindowFrame
+    Style.BorderStyle = ebs3D
+    Style.HotTrack = False
+    TabOrder = 2
+    Width = 301
+  end
+  object ApellidoMTE: TcxTextEdit
+    Left = 96
+    Top = 93
+    Style.BorderColor = clWindowFrame
+    Style.BorderStyle = ebs3D
+    Style.HotTrack = False
+    TabOrder = 3
+    Width = 258
+  end
+  object FechaNacDT: TcxDateEdit
+    Left = 481
+    Top = 93
+    Style.BorderColor = clWindowFrame
+    Style.BorderStyle = ebs3D
+    Style.HotTrack = False
+    Style.ButtonStyle = bts3D
+    Style.PopupBorderStyle = epbsFrame3D
+    TabOrder = 4
+    Width = 284
+  end
+  object BEliminar: TcxButton
+    Left = 586
+    Top = 148
+    Width = 176
+    Height = 25
+    Caption = 'ELIMINAR'
+    TabOrder = 5
+  end
+  object BInsertar: TcxButton
+    Left = 17
+    Top = 150
+    Width = 176
+    Height = 25
+    Caption = 'INSERTAR'
+    TabOrder = 6
+    OnClick = BInsertarClick
+  end
+  object BCancelar: TcxButton
+    Left = 394
+    Top = 150
+    Width = 176
+    Height = 25
+    Caption = 'CANCELAR'
+    TabOrder = 7
+  end
+  object BModificar: TcxButton
+    Left = 203
+    Top = 150
+    Width = 176
+    Height = 25
+    Caption = 'MODIFICAR'
+    TabOrder = 8
+  end
+  object cxLabel1: TcxLabel
+    Left = 9
+    Top = 54
+    Caption = 'Nombre:'
+  end
+  object cxLabel3: TcxLabel
+    Left = 369
+    Top = 55
+    Caption = 'Apellido Paterno:'
+  end
+  object cxLabel4: TcxLabel
+    Left = 6
+    Top = 93
+    Caption = 'Apellido Materno:'
+  end
+  object cxLabel5: TcxLabel
+    Left = 369
+    Top = 92
+    Caption = 'Fecha de Nacimiento:'
+  end
+  object UniConnection1: TUniConnection
+    ProviderName = 'InterBase'
+    Port = 3050
+    Database = 'd:\datos\PRUEBAS.FDB'
+    SpecificOptions.Strings = (
+      'InterBase.ClientLibrary=D:\datos\fbclient.dll')
+    Username = 'SYSDBA'
+    Server = '127.0.0.1'
+    Connected = True
+    Left = 679
+    Top = 239
+    EncryptedPassword = '92FF9EFF8CFF8BFF9AFF8DFF94FF9AFF86FF'
+  end
+  object InsertarQRY: TUniQuery
+    Connection = UniConnection1
+    SQL.Strings = (
+      
+        'insert into Clientes (nombre, apellidop, apellidom, fechanac) va' +
+        'lues (:pNombre, :pApellidop, :pApellidom, :pFechanac)')
+    Left = 547
+    Top = 248
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'pNombre'
+        Value = nil
+      end
+      item
+        DataType = ftUnknown
+        Name = 'pApellidop'
+        Value = nil
+      end
+      item
+        DataType = ftUnknown
+        Name = 'pApellidom'
+        Value = nil
+      end
+      item
+        DataType = ftUnknown
+        Name = 'pFechanac'
+        Value = nil
+      end>
+  end
+end
